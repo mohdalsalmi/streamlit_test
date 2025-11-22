@@ -1,6 +1,9 @@
 import streamlit as st
 from PIL import Image
 import google.generativeai as genai
+import pandas as pd
+from numpy.random import default_rng as rng
+
 
 if "summary" not in st.session_state:
     st.session_state.summary = ""
@@ -11,6 +14,7 @@ GEMINI_API_KEY = "AIzaSyA6A0zkjR6xxjL5TG3DBBWQlKu_gKQHYeg"
 
 genai.configure(api_key=GEMINI_API_KEY) # type: ignore
 model = genai.GenerativeModel(model_name="gemini-2.5-flash") # type: ignore
+
 
 
 st.title("Image Summarizer")
@@ -32,10 +36,14 @@ if st.button("Summarize Image"):
             )
         
         st.session_state.summary = response.text
+        st.toast("Summary Ready!")
+    else:
+        st.error("Please upload an image first")
 
 if st.session_state.summary:
     summary = st.session_state.summary
     st.subheader("Summary")
     st.success(summary)
     st.download_button("Download Summary", summary, "Summary.txt", "text/plain")
+
 
